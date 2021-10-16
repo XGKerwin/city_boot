@@ -51,6 +51,16 @@ public class Parkingrecord implements Serializable {
     @TableField("parkName")
     private String parkName;
 
+    @TableField("number")
+    private String number;
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
 
     public Integer getId() {
         return id;

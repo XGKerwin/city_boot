@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.city.bean.User;
 import com.city.returnJson.ReturnObject;
 import com.city.service.impl.UserServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
@@ -30,16 +32,37 @@ public class UserController {
     @Autowired
     private UserServiceImpl userService;
 
-    @RequestMapping("/login")
+    @PostMapping("/login")
     @ResponseBody
     public Object selectLogin(String username, String password) {
         System.out.println("user/login");
+        String s = VerifyUsernameAndPassword(username, password);
+        if (!"".equals(s)) {
+            return JSONObject.toJSON(new ReturnObject(300, s));
+        }
         List<User> user = userService.setUser(username, password);
         if (user.size() != 0) {
             return JSONObject.toJSON(new ReturnObject(200, "操作成功", 1, user.get(0)));
         } else {
             return JSONObject.toJSON(new ReturnObject(500, "操作失败"));
         }
+    }
+
+    private String VerifyUsernameAndPassword(String username, String password) {
+        /*
+          commons-lang3
+          通过 commons-lang3包 判断输入的用户名密码是否为空
+         */
+        boolean name = StringUtils.isBlank(username);
+        boolean pass = StringUtils.isBlank(password);
+        if (name){
+            System.out.println("用户名不能为空");
+            return "用户名不能为空";
+        }
+        if (pass){
+            return "密码不能为空";
+        }
+        return "";
     }
 
     @RequestMapping("/register")
